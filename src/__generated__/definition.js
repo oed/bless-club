@@ -1,0 +1,2 @@
+// This is an auto-generated file, do not edit manually
+export const definition = {"models":{"Blessing":{"id":"kjzl6hvfrbw6c82mkud4qs38zl4hd03ifoyg2ksvfjkhuxebfzh3ef89vwvtvrr","accountRelation":{"type":"list"}}},"objects":{"Blessing":{"to":{"type":"did","required":true},"text":{"type":"string","required":false},"author":{"type":"view","viewType":"documentAccount"}}},"enums":{},"accountData":{"blessingList":{"type":"connection","name":"Blessing"}}}

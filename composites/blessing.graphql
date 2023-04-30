@@ -1,0 +1,5 @@
+type Blessing @createModel(accountRelation: LIST, description: "A blessing") {
+  to: DID!
+  text: String @string(maxLength: 240)
+  author: DID! @documentAccount
+}

@@ -1,0 +1,115 @@
+.main {
+  min-height: calc(100vh - 80px);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  padding-bottom: 30%;
+}
+
+.header {
+  width: 100%;
+  background-color: white;
+  /* height: 30px; */
+  padding: 1vh;
+  box-shadow: 0 0 10px lightblue;
+}
+
+.logo {
+  display: flex; 
+  float: inline-start;
+  /* top: 30px; */
+  flex: 2;
+  /* clear: right; */
+}
+
+.title {
+  flex: 1;
+  display: flex;
+  font-weight: bold;
+  color: black;
+  padding: 10px;
+  float: left;
+}
+
+.item {
+  background-color: white;
+  box-shadow: 0 0 10px lightblue;
+  margin: 2vh;
+  padding: 2vh;
+}
+
+.formGroup {
+  margin-top: 15px;
+  margin-bottom: 10px;
+
+  font-size: 18px;
+}
+.formGroup label {
+  display: block;
+  color: black;
+  padding-bottom: 2px;
+}
+.formGroup input {
+  border: 2px solid lightblue;
+  /* background-color: #efefef;  */
+  border-radius: 5px;
+  font-size: 16px;
+  padding: 5px 15px;
+}
+.formGroup textarea {
+  border: 2px solid lightblue;
+  /* background-color: #efefef;  */
+  border-radius: 5px;
+  font-size: 16px;
+  padding: 5px 15px;
+}
+.buttonContainer {
+  width: 100%;
+  display: flex; 
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.buttonContainer button {
+  /* width: 100%; */
+}
+
+.footer {
+  height: 100%;
+  /* height: 62px; */
+  position: sticky;
+  bottom: 0px;
+  right:0px;
+  background-color: white;
+  box-shadow: 0 0 10px lightblue;
+
+  /* min-width: 100vh; */
+  padding: 20px;  
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 37.5%;
+  width: 25%;
+  text-align: center;
+  height: 2px;
+}
+.footer div {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+.footer a {
+  display: block;
+
+}
