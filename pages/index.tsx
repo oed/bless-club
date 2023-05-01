@@ -17,6 +17,9 @@ interface Blessing {
   text: String
   author?: String
 }
+interface NameMap {
+  [name]: String
+}
 
 const Home: NextPage = () => {
   const clients = useCeramicContext()
@@ -25,15 +28,12 @@ const Home: NextPage = () => {
   const [blessing, setBlessing] = useState<Blessing | undefined>()
   const [cursor, setCursor] = useState<String>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const [nameMap, setNameMap] = useState<NameMap>({})
 
   const handleLogin = async () => {
     await authenticateCeramic(ceramic, composeClient)
     await getBlessings()
   }
-
-  useEffect(() => {
-    fillENSNames(blessings)
-  }, [blessings])
 
 
   const getBlessings = async () => {
@@ -77,26 +77,32 @@ const Home: NextPage = () => {
     }
   }
 
+  useEffect(() => {
+    fillENSNames(blessings)
+  }, [blessings])
+
   const ensMap = {}
   const fillENSNames = async (bls) => {
-    console.log('filling')
     const prov = new ethers.providers.Web3Provider(window.ethereum);
-    const fillMap = async (field, i) => {
-      const address = bls[i][field]
-      if (address.indexOf('.eth') !== -1) return
-      if (!ensMap[address]) {
-        const name = await prov.lookupAddress(address)
-        ensMap[address] = name || address
+
+    
+    bls.map(b => {
+      const loadData = address => {
+        if (address.indexOf('.eth') !== -1) return
+        if (ensMap[address]) return
+        const promise = prov.lookupAddress(address)
+        ensMap[address] = { promise }
       }
-      if (ensMap[address] !== address) {
-        bls[i][field] = ensMap[address]
-        setBlessings(bls)
+      loadData(b.to)
+      loadData(b.author)
+    })
+    await Promise.all(Object.entries(ensMap).map(async ([key, value ]) => {
+      if (value.promise) {
+        ensMap[key].name = await value.promise || key
+        delete ensMap[key].promise
       }
-    }
-    for (let i = 0; i < bls.length; ++i) {
-      await fillMap('to', i)
-      await fillMap('author', i)
-    }
+    }))
+    setNameMap(ensMap)
   }
   
   const toDID = async (input: string) => {
@@ -151,12 +157,14 @@ const Home: NextPage = () => {
   }, [ ])
 
   const renderItem = (key, index) => {
+    const toName = addrOrName => addrOrName.startsWith('0x') ? nameMap[addrOrName]?.name || addrOrName : addrOrName
+    const { author, to, text } = blessings[index]
     return (<div key={key} className={styles.item}>
-        <div className={styles.itemauthor}>{blessings[index].author}</div>
+        <div className={styles.itemauthor}>{toName(author)}</div>
         <div className={styles.itembless}>Blessed</div>
-        <div className={styles.itemto}>{blessings[index].to}</div>
+        <div className={styles.itemto}>{toName(to)}</div>
         <hr />
-        <div className={styles.itemtext}>{blessings[index].text}</div>
+        <div className={styles.itemtext}>{toName(text)}</div>
       </div>);
   }
 
