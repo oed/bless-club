@@ -18,14 +18,12 @@
 
 .logo {
   display: flex; 
-  float: inline-start;
+  float: left;
   /* top: 30px; */
-  flex: 2;
   /* clear: right; */
 }
 
 .title {
-  flex: 1;
   display: flex;
   font-weight: bold;
   color: black;

@@ -18,7 +18,7 @@ interface Blessing {
   author?: String
 }
 interface NameMap {
-  [name]: String
+  [name: string]: String
 }
 
 const Home: NextPage = () => {
@@ -97,8 +97,10 @@ const Home: NextPage = () => {
       loadData(b.author)
     })
     await Promise.all(Object.entries(ensMap).map(async ([key, value ]) => {
+      // @ts-ignore
       if (value.promise) {
-        ensMap[key].name = await value.promise || key
+        // @ts-ignore
+        ensMap[key] = await value.promise || key
         delete ensMap[key].promise
       }
     }))
@@ -157,7 +159,7 @@ const Home: NextPage = () => {
   }, [ ])
 
   const renderItem = (key, index) => {
-    const toName = addrOrName => addrOrName.startsWith('0x') ? nameMap[addrOrName]?.name || addrOrName : addrOrName
+    const toName = addrOrName => addrOrName.startsWith('0x') ? nameMap[addrOrName] || addrOrName : addrOrName
     const { author, to, text } = blessings[index]
     return (<div key={key} className={styles.item}>
         <div className={styles.itemauthor}>{toName(author)}</div>
