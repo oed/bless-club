@@ -21,7 +21,7 @@ const ceramic = new CeramicClient("http://localhost:7007");
 export const writeComposite = async (spinner) => {
   await authenticate()
   spinner.info("writing composite to Ceramic")
-  const composite = await createComposite(ceramic, './composites/basicProfile.graphql')
+  const composite = await createComposite(ceramic, './composites/blessing.graphql')
   await writeEncodedComposite(composite, "./src/__generated__/definition.json");
   spinner.info('creating composite for runtime usage')
   await writeEncodedCompositeRuntime(

@@ -5,13 +5,14 @@ import { ComposeClient } from "@composedb/client";
 import { definition } from "../src/__generated__/definition.js";
 import { RuntimeCompositeDefinition } from "@composedb/types";
 
+const CERAMIC_URL = 'https://ceramic-blessclub.hirenodes.io/'
 /**
  * Configure ceramic Client & create context.
  */
-const ceramic = new CeramicClient("http://localhost:7007");
+const ceramic = new CeramicClient(CERAMIC_URL);
 
 const composeClient = new ComposeClient({
-  ceramic: "http://localhost:7007",
+  ceramic: CERAMIC_URL,
   // cast our definition as a RuntimeCompositeDefinition
   definition: definition as RuntimeCompositeDefinition,
 });
