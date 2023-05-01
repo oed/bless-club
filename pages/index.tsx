@@ -31,6 +31,11 @@ const Home: NextPage = () => {
     await getBlessings()
   }
 
+  useEffect(() => {
+    fillENSNames(blessings)
+  }, [blessings])
+
+
   const getBlessings = async () => {
     setLoading(true)
     if(ceramic.did !== undefined) {
@@ -39,7 +44,7 @@ const Home: NextPage = () => {
         edges: rawBlessings
       }}} = await composeClient.executeQuery(`
       query{
-        blessingIndex(last:5${cursor ? `, before: "${cursor}"` : ''}){
+        blessingIndex(last:10${cursor ? `, before: "${cursor}"` : ''}){
           edges{
             cursor
             node{
@@ -69,7 +74,6 @@ const Home: NextPage = () => {
       const bls = blessings.concat(rawBlessings.reverse().map(format))
       await setBlessings(bls)
       setLoading(false);
-      fillENSNames(bls)
     }
   }
 
@@ -180,11 +184,13 @@ const Home: NextPage = () => {
           length={blessings.length}
           // type='uniform'
         />
-        <button onClick={() => {
-          getBlessings();
-        }}>
-          Load more!
-        </button>
+        {Boolean(cursor) ? 
+          <button onClick={() => {
+            getBlessings();
+          }}>
+            Load more!
+          </button>
+         : null}
       </main>
       <footer className={styles.footer}>
         {blessing === undefined && ceramic.did === undefined ? (
