@@ -43,7 +43,7 @@ const Home: NextPage = () => {
       edges: rawBlessings
     }}} = await composeClient.executeQuery(`
     query{
-      blessingIndex(last:5${cursor ? `, before: "${cursor}"` : ''}){
+      blessingIndex(last:10${cursor ? `, before: "${cursor}"` : ''}){
         edges{
           cursor
           node{
@@ -131,12 +131,13 @@ const Home: NextPage = () => {
     setLoading(true);
     if (ceramic.did !== undefined) {
       const to = await toDID(blessing?.to as string)
+      const text = blessing?.text
       const update = await composeClient.executeQuery(`
         mutation {
           createBlessing(input: {
             content: {
               to: "${to}"
-              text: "${blessing?.text}"
+              text: "${text}"
             }
           }) 
           {
@@ -148,9 +149,18 @@ const Home: NextPage = () => {
           }
         }
       `);
-      await getBlessings();
+      blessings.unshift({ 
+        to: blessing?.to as String,
+        text: text as String,
+        author: ceramic.did.parent.split('did:pkh:eip155:1:')[1]
+      })
+      setBlessings(blessings)
       setLoading(false);
     }
+      // @ts-ignore
+    document.getElementById('ensInput').value = ''
+      // @ts-ignore
+    document.getElementById('textInput').value = ''
   }
   
   /**
@@ -217,6 +227,7 @@ const Home: NextPage = () => {
             <div className={styles.formGroup}>
               <label>Who?</label>
               <input
+                id="ensInput"
                 type="text"
                 placeholder="ENS name or address"
                 onChange={(e) => {
@@ -228,6 +239,7 @@ const Home: NextPage = () => {
             <div className={styles.formGroup}>
               <label>Blessing</label>
               <textarea
+                id="textInput"
                 placeholder="Why are you blessing this person?"
                 onChange={(e) => {
                   // @ts-ignore
