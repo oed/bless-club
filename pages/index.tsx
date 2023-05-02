@@ -62,6 +62,8 @@ const Home: NextPage = () => {
 
       if (hasPreviousPage) {
         setCursor(rawBlessings[0].cursor)
+      } else {
+        setCursor()
       }
       
       const toAddress = did => did.slice(17)
