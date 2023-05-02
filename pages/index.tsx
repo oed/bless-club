@@ -28,66 +28,70 @@ const Home: NextPage = () => {
   const [blessing, setBlessing] = useState<Blessing | undefined>()
   const [cursor, setCursor] = useState<String>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const [didLoad, setDidLoad] = useState<boolean>(false)
   const [nameMap, setNameMap] = useState<NameMap>({})
 
   const handleLogin = async () => {
     await authenticateCeramic(ceramic, composeClient)
-    await getBlessings()
   }
 
 
   const getBlessings = async () => {
     setLoading(true)
-    if(ceramic.did !== undefined) {
-      const { data: { blessingIndex: { 
-        pageInfo: { hasPreviousPage },
-        edges: rawBlessings
-      }}} = await composeClient.executeQuery(`
-      query{
-        blessingIndex(last:10${cursor ? `, before: "${cursor}"` : ''}){
-          edges{
-            cursor
-            node{
-              to {id}
-              text
-              author {id}
-            }
-          }
-          pageInfo {
-            hasPreviousPage
+    const { data: { blessingIndex: { 
+      pageInfo: { hasPreviousPage },
+      edges: rawBlessings
+    }}} = await composeClient.executeQuery(`
+    query{
+      blessingIndex(last:5${cursor ? `, before: "${cursor}"` : ''}){
+        edges{
+          cursor
+          node{
+            to {id}
+            text
+            author {id}
           }
         }
+        pageInfo {
+          hasPreviousPage
+        }
       }
-      `) as any;
-
-      if (hasPreviousPage) {
-        setCursor(rawBlessings[0].cursor)
-      } else {
-        setCursor('')
-      }
-      
-      const toAddress = did => did.slice(17)
-      const format = ({ node }) => ({
-        to: toAddress(node.to.id),
-        text: node.text,
-        author: toAddress(node.author.id)
-      })
-      // const bls = rawBlessings.reverse().map(format) 
-      const bls = blessings.concat(rawBlessings.reverse().map(format))
-      await setBlessings(bls)
-      setLoading(false);
     }
+    `) as any;
+
+    if (hasPreviousPage) {
+      setCursor(rawBlessings[0].cursor)
+    } else {
+      setCursor('')
+    }
+    
+    const toAddress = did => did.slice(17)
+    const format = ({ node }) => ({
+      to: toAddress(node.to.id),
+      text: node.text,
+      author: toAddress(node.author.id)
+    })
+    // const bls = rawBlessings.reverse().map(format) 
+    const bls = blessings.concat(rawBlessings.reverse().map(format))
+    await setBlessings(bls)
+    setLoading(false);
   }
 
   useEffect(() => {
     fillENSNames(blessings)
   }, [blessings])
 
+  useEffect(() => {
+    if (!didLoad) {
+      setDidLoad(true)
+      getBlessings()
+    }
+  }, [didLoad])
+
   const ensMap = {}
   const fillENSNames = async (bls) => {
     const prov = new ethers.providers.Web3Provider(window.ethereum);
 
-    
     bls.map(b => {
       const loadData = address => {
         if (address.indexOf('.eth') !== -1) return
@@ -160,10 +164,10 @@ const Home: NextPage = () => {
     }
   }, [ ])
 
-  const renderItem = (key, index) => {
+  const renderBlessing = (blessing) => {
     const toName = addrOrName => addrOrName.startsWith('0x') ? nameMap[addrOrName] || addrOrName : addrOrName
-    const { author, to, text } = blessings[index]
-    return (<div key={key} className={styles.item}>
+    const { author, to, text } = blessing
+    return (<div className={styles.item}>
         <div className={styles.itemauthor}>{toName(author)}</div>
         <div className={styles.itembless}>Blessed</div>
         <div className={styles.itemto}>{toName(to)}</div>
@@ -171,7 +175,6 @@ const Home: NextPage = () => {
         <div className={styles.itemtext}>{toName(text)}</div>
       </div>);
   }
-
   return (
     <div className={styles.container}>
       <Head>
@@ -191,11 +194,7 @@ const Home: NextPage = () => {
           </div>
           <span className={styles.title}>bless.club</span>
         </div>
-        <ReactList
-          itemRenderer={renderItem}
-          length={blessings.length}
-          // type='uniform'
-        />
+        {blessings.map(renderBlessing)}
         {Boolean(cursor) ? 
           <button onClick={() => {
             getBlessings();

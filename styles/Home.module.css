@@ -36,6 +36,7 @@
   box-shadow: 0 0 10px lightblue;
   margin: 2vh;
   padding: 2vh;
+  max-width: 50vh;
 }
 
 .formGroup {
