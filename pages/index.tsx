@@ -32,7 +32,9 @@ const Home: NextPage = () => {
   const [nameMap, setNameMap] = useState<NameMap>({})
 
   const handleLogin = async () => {
+    setLoading(true)
     await authenticateCeramic(ceramic, composeClient)
+    setLoading(false)
   }
 
 
