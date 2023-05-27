@@ -193,6 +193,12 @@ const Home: NextPage = () => {
         <title>bless.club</title>
         <meta name="description" content="Bless people you meet" />
         <link rel="icon" href="/favicon.ico" />
+        <meta property="og:title" content="bless.club" />
+        <meta property="og:url" content="https://bless.club" />
+        <meta
+          property="og:image"
+          content={blessClubLogo}
+        />
       </Head>
 
       <main className={styles.main}>
