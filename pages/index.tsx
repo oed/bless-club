@@ -197,7 +197,7 @@ const Home: NextPage = () => {
         <meta property="og:url" content="https://bless.club" />
         <meta
           property="og:image"
-          content={blessClubLogo}
+          content="https://bless.club/_next/static/media/icon.12ee4f02.png"
         />
       </Head>
 
