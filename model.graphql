@@ -1,0 +1,10 @@
+type Pin
+  @createModel(accountRelation: LIST, description: "A pin to a location")
+  @createIndex(fields: [{ path: "tag" }]) {
+  author: DID! @documentAccount
+  name: String! @string(minLength: 1, maxLength: 100)
+  description: String! @string(minLength: 1, maxLength: 300)
+  tag: String! @string(minLength: 1, maxLength: 100)
+  lat: Float! @float(min: -90, max: 90)
+  lon: Float! @float(min: -180, max: 180)
+}

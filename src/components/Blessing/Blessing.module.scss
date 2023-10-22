@@ -1,0 +1,26 @@
+
+@import "@styles/settings/_settings";
+
+
+.blessingContainer {
+  padding: 1em;
+  margin: 1em;
+  box-shadow: 0 0 10px lightblue;
+  max-width: 80vh;
+}
+
+.attributionItem {
+  padding-right: 1em;
+    color: gray;
+  a {
+    text-decoration: underline;
+  }
+}
+
+.attribution {
+  display: flex;
+  flex-wrap: wrap;
+  justify-items: start;
+  margin-bottom: 0.5em;
+}
+
